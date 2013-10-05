@@ -51,8 +51,9 @@ def search_storyful(tag, max_results=30):
 
     num_items = 0
     url = "http://api.storyful.com/tags/" + urllib2.quote(tag) + "/stories?per_page=" + str(per_page)
-    while num_items < max_results:
-        data = json.loads(urllib2.urlopen(url).read())
+    while url is not None and num_items < max_results:
+        request = urllib2.Request(url)
+        data = json.loads(urllib2.urlopen(request).read())
 
         url = data['next']
         stories = data['tag']['stories']
