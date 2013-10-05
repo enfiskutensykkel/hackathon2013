@@ -34,7 +34,8 @@ def storyful(name):
                 'summary': story['summary'],
                 'text': story['summary'],
                 'metadata': None,
-                'href': None
+                'href': None,
+                'source': 'storyful'
             }
 
 
@@ -46,7 +47,8 @@ def afp(name):
             'summary': None,
             'text': '\n'.join(paragraphs),
             'metadata': metadata,
-            'href': None
+            'href': None,
+            'source': 'afp'
         }
 
 
@@ -74,16 +76,15 @@ def search_for_person(name, page):
     #stories = get_storyful_data(name)['tag']['stories']
     text = ""
     for story in search_name(name):
-        if 'summary' in story:
-            context = {
-                'title': story['title'],
-                'source': 'storyful',
-                'url': story['html_resource_url'],
-                'begin': len(text),
-            }
-            text += story['summary']
-            context['end'] = len(text)
-            context_list.append(context)
+        context = {
+            'title': story['title'],
+            'source': story['source'],
+            'url': story['href'],
+            'begin': len(text),
+        }
+        text += story['summary']
+        context['end'] = len(text)
+        context_list.append(context)
 
     for name, quote, offset in find_quotations_in_text(text, html=True):
         for context in context_list:
