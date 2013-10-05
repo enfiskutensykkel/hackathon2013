@@ -1,4 +1,4 @@
-hackathon2013
-=============
+Can I quote you on that?
+========================
 
-Media Hack Day 2013
+A project done for the hackathon @ Media Hack Day 2013.
