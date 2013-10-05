@@ -52,5 +52,6 @@ The raid comes as Kenya's military confirmed the names of four al-Shabaab fighte
 The publication of the identities supports CCTV footage from the Nairobi mall published by a private TV station that shows no more than four attackers, contradicting earlier government statements that between 10 to 15 attackers were involved.
 """
 
-    for name, quote in find_quotations_in_text(text):
-        print "%s: %s" % (name, quote)
+    for i in range(1, 100):
+        for name, quote in find_quotations_in_text(text):
+            print "%s: %s" % (name, quote)
