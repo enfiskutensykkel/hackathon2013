@@ -1,26 +1,43 @@
 .mainWrapper
 {
-	border: 1px solid #000000;
+	width: 944px;
+	min-height: 500px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #eee;
+	border-radius: 0 0 5px 5px;
+	border: 1px solid #ccc;
+}
+
+.listWrapper
+{
+	margin-top: 20px;
 }
 
 .inputWrapper
 {
 	text-align: center;
-	background-color: #222299;
 	height: 50px;
+	
+	background-color: #222222;
+	border-color: #080808;
+	border-radius: 0 0 5px 5px;
 }
 
 .searchField
 {
 	width: 60%;
 	margin-top: 10px;
+	font-style: italic;
+	height: 22px;
+	font-size: 14px;
 }
 
 #quotesList .quotePart
 {
 	width: 700px ;
-  margin-left: auto ;
-  margin-right: auto ;
+	margin-left: auto ;
+	margin-right: auto ;
 
 }
 
@@ -30,7 +47,27 @@
 
 }
 
-#quotesList .quote
+#quotesList .quotePart.quote
 {
+	font-style: italic;
 	word-wrap: break-word;
+}
+
+#quotesList .quotePart .who
+{
+	font-weight: bold;
+	font-size: 14px;
+}
+
+#progress
+{
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	
+	background-color: #555555;
+	opacity:0.4;
+	display: none;
 }

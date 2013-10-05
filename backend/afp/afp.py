@@ -1,12 +1,17 @@
 import urllib2
 from urllib import quote
-import re
+import datetime
 import xml.etree.ElementTree as ET
 
 base_url = 'http://www.ipadafp.afp.com/afp-wanifra'
 
 # TODO: Dates as part of metadata
 # TODO: Geolocation as part of metadata
+
+
+def get_published_at(data):
+    tree = ET.fromstring(data)
+    return datetime.datetime.strptime(tree.find('NewsItem/NewsManagement/ThisRevisionCreated').text, '%Y%m%dT%H%M%SZ')
 
 
 def get_entities(data):
@@ -54,13 +59,14 @@ def get_relevant_data(who, max_results=30):
         title = ref.find('NewsLines/HeadLine').text
         data = urllib2.urlopen(url).read()
 
+        date = get_published_at(data)
         metadata = get_entities(data)
         summary, content = get_content(data)
 
-        yield url.rsplit('.xml', 1)[0], title, summary, content, metadata
+        yield url.rsplit('.xml', 1)[0], date, title, summary, content, metadata
 
 
 if __name__ == '__main__':
     # Example how to use this module
-    for url, title, summary, paragraphs, metadata in get_relevant_data("Barack Obama"):
-        print summary
+    for url, date, title, summary, paragraphs, metadata in get_relevant_data("Barack Obama"):
+        print date
