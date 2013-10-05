@@ -6,6 +6,8 @@ from flask import jsonify
 
 from calais import find_quotations_in_text
 
+from storyful import search_storyful
+
 app = Flask(__name__)
 
 
@@ -30,7 +32,14 @@ def receive_quote():
 
 def search_for_person(name, page):
     data = []
-    for item in find_quotations_in_text(text):
+
+    #stories = get_storyful_data(name)['tag']['stories']
+    text = ""
+    for story in search_storyful(name):
+        if 'summary' in story:
+            text += story['summary']
+
+    for item in find_quotations_in_text(text, html=True):
         data.append(item)
 
     return dict(
@@ -42,6 +51,7 @@ def search_for_person(name, page):
 @app.route("/persons/<name>/")
 def persons_first_page(name):
     return jsonify(search_for_person(name, 0))
+    #return jsonify(get_storyful_data(name))
 
 
 @app.route("/persons/<name>/<int:page>")

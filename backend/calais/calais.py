@@ -6,17 +6,17 @@ import json
 _api_key='x57tjyenbds4489ffjmcgdx3'
 
 
-def find_quotations_in_text(text):
+def find_quotations_in_text(text, html=False):
     """Finds all quotations in the given raw text.
     Usage: See example code at the bottom of the file
     """
 
     request = urllib2.Request('http://api.opencalais.com/tag/rs/enrich', headers={
         'x-calais-licenseID': _api_key,
-        'content-type': 'text/raw',
+        'content-type': 'text/html' if html else 'text/raw',
         'accept': 'application/json'
     })
-    result = urllib2.urlopen(request, text).read()
+    result = urllib2.urlopen(request, text.encode('utf8')).read()
 
     data = json.loads(result)
 
