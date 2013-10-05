@@ -1,5 +1,6 @@
 import urllib2
 import json
+import datetime as dt
 
 #api_key='d8e893d2958d15c7807b412f72f30ce8'
 
@@ -39,7 +40,7 @@ def get_story_title_date(story):
 
 
 def get_story_published_datetime(story):
-    return story['published_at']
+    return dt.datetime.strptime(story['published_at'], '%Y-%m-%dT%H:%M:%SZ')
 
 
 def get_story_tags(story):

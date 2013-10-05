@@ -3,6 +3,7 @@
 from flask import Flask
 from flask import request
 from flask import jsonify
+import datetime as dt
 
 from calais import find_quotations_in_text
 
@@ -38,8 +39,9 @@ def afp(name):
             'metadata': metadata,
             'href': url,
             'source': 'afp',
-            'published_at': date.isoformat()
+            'published_at': date
         }
+
 
 # Generator for searching in guardian API
 def guardian(name):
@@ -51,23 +53,38 @@ def guardian(name):
             'metadata': None,
             'href': story['webUrl'],
             'source': 'guardian',
-            'published_at': story['webPublicationDate']
+            'published_at': dt.datetime.strptime(story['webPublicationDate'], '%Y-%m-%dT%H:%M:%SZ')
         }
+
 
 # Aggregate the generators
 def search_name(name):
     def aggregator(generators):
-        i = 0
-        max_results = 30
-        while max_results:
-            max_results -= 1
+        result = []
+        for i in xrange(0, len(generators)):
             try:
-                i = (i + 1) % len(generators)
-                yield generators[i].next()
+                result.append(generators[i].next())
             except StopIteration:
                 del generators[i]
+                i -= 1
                 if len(generators) == 0:
-                    break
+                    return
+
+        while 1:
+            j = 0
+            for i in xrange(1, len(generators)):
+                if result[i]['published_at'] < result[j]['published_at']:
+                    j = i
+
+            yield result[j]
+
+            try:
+                result[j] = generators[j].next()
+            except StopIteration:
+                del generators[j]
+                j -= 1
+                if len(generators) == 0:
+                    return
 
     return aggregator([afp(name), guardian(name), storyful(name)])
 
