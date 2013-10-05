@@ -6,21 +6,30 @@ $(document).ready (function ()
 });
 
 
-function addQuote ()
+function addQuote (item)
 {
-	$("#quotesList").append(element);
+	$.tmpl( "quoteItemTmpl", item ).appendTo("#quotesList");
 }
 
 function addEvents ()
 {
 	var self = this;
-	$("searchField").click(function (e)
+	$(".searchField").keyup(function (e)
 	{
-		self.doSearch();
+		if (event.which == 13)
+			self.doSearch();
 	});
 }
 
 function doSearch (text)
 {
+	putSerch(text, onSearchResult);
+}
 
+function onSearchResult (data)
+{
+	for (var i=0; i < data.length; i++)
+	{
+		addQuote(data[i]);
+	}
 }
