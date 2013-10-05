@@ -25,13 +25,7 @@ The publication of the identities supports CCTV footage from the Nairobi mall pu
 """
 
 
-@app.route("/", methods=["POST"])
-def receive_quote():
-    print request.json
-    return jsonify({'debug': 'hello world'})
-
-
-# Generator for searching in storyful
+# Generator for searching in storyful API
 def storyful(name):
     for story in search_storyful(name):
         if 'summary' in story:
