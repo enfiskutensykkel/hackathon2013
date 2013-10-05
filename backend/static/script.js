@@ -6,7 +6,7 @@ $(document).ready (function ()
 });
 
 
-function addQuote (item)
+function addQuotes (item)
 {
 	$.tmpl( "quoteItemTmpl", item ).appendTo("#quotesList");
 }
@@ -22,25 +22,24 @@ function addEvents ()
 	
 	$(".searchField").focus(function ()
 	{
-		$(this).val("")
+		$(this).val("");
 	});
 }
 
 function doSearch (text)
 {
 	$("#quotesList").empty();
+	$("#quotesList").append("<div id='searchInfo' class='quotePart'>Searching...</div>");
 	$("#progress").show();
 	putSerch(text, onSearchResult);
 }
 
 function onSearchResult (data)
 {
-	addQuote(data)
-	/*
-	for (var i=0; i < data.data.length; i++)
-	{
-		addQuote(data.data[i]);
-	}
-	*/
+	$("#searchInfo").remove();
 	$("#progress").hide();
+	
+	addQuotes(data);	
+	filterResult(data);
+	
 }
