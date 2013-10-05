@@ -7,6 +7,7 @@ from flask import jsonify
 from calais import find_quotations_in_text
 
 from storyful import search_storyful
+from afp import search_afp_after_person
 
 app = Flask(__name__)
 
@@ -30,14 +31,56 @@ def receive_quote():
     return jsonify({'debug': 'hello world'})
 
 
+# Generator for searching in storyful
+def storyful(name):
+    for story in search_storyful(name):
+        if 'summary' in story:
+            yield {
+                'title': None,
+                'summary': story['summary'],
+                'text': story['summary'],
+                'metadata': None,
+                'href': None
+            }
+    #raise StopIteration  # We don't really need this
+
+
+# Generator for searching in AFP API
+def afp(name):
+    for paragraphs, metadata in search_afp_after_person(name):
+        yield {
+            'title': None,
+            'summary': None,
+            'text': '\n'.join(paragraphs),
+            'metadata': metadata,
+            'href': None
+        }
+    #raise StopIteration  # We don't really need this
+
+
+# Aggregate the generators
+def search_name(name):
+    def aggregator(*generators):
+        num_generators = len(generators)
+        i = 0
+        while True:
+            try:
+                i = (i + 1) % num_generators
+                yield generators[i].next()
+            except StopIteration:
+                num_generators -= 1
+                if num_generators == 0:
+                    break
+
+    return aggregator(afp(name), storyful(name))
+
+
 def search_for_person(name, page):
     data = []
 
-    #stories = get_storyful_data(name)['tag']['stories']
     text = ""
-    for story in search_storyful(name):
-        if 'summary' in story:
-            text += story['summary']
+    for nameData in search_name(name):
+        text += nameData['text']
 
     for item in find_quotations_in_text(text, html=True):
         data.append(item)
