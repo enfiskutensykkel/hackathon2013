@@ -2,7 +2,7 @@
 
 function putSerch (text, cbResult)
 {
-	
+	/*
 	var data = 
 	[
 		{
@@ -16,11 +16,12 @@ function putSerch (text, cbResult)
 	];
 	
 	cbResult(data);
+	*/
 	
-	/*
+	
 	
 	$.ajax({
-		url : "../testdata.json",
+		url : "/persons/barack%20obama/",
 		type: 'get',
 		success : function(data, textStatus, jqXHR)
 		{
@@ -32,5 +33,5 @@ function putSerch (text, cbResult)
 			throw new Error("An error occured. "+textStatus +" - "+data.status);
 		}
 	});
-	*/
+	
 }
