@@ -60,19 +60,18 @@ def afp(name):
 
 # Aggregate the generators
 def search_name(name):
-    def aggregator(*generators):
-        num_generators = len(generators)
+    def aggregator(generators):
         i = 0
         while True:
             try:
-                i = (i + 1) % num_generators
+                i = (i + 1) % len(generators)
                 yield generators[i].next()
             except StopIteration:
-                num_generators -= 1
-                if num_generators == 0:
+                del generators[i]
+                if len(generators) == 0:
                     break
 
-    return aggregator(afp(name), storyful(name))
+    return aggregator([afp(name), storyful(name)])
 
 
 def search_for_person(name, page):
