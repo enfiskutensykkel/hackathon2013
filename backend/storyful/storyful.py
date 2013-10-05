@@ -40,7 +40,7 @@ def get_story_title_date(story):
 
 
 def get_story_published_datetime(story):
-    return dt.datetime.strptime(story['published_at'], '%Y-%m-%dT%H:%M:%SZ')
+    return story['published_at']
 
 
 def get_story_tags(story):

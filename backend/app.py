@@ -5,6 +5,7 @@ from flask import request
 from flask import jsonify
 import datetime as dt
 
+from generator import PeekableGenerator
 from calais import find_quotations_in_text
 
 from storyful import search_storyful
@@ -25,7 +26,7 @@ def storyful(name):
                 'metadata': None,
                 'href': story['html_resource_url'],
                 'source': 'storyful',
-                'published_at': story['published_at']
+                'published_at': dt.datetime.strptime(story['published_at'], '%Y-%m-%dT%H:%M:%SZ')
             }
 
 
@@ -60,33 +61,26 @@ def guardian(name):
 # Aggregate the generators
 def search_name(name):
     def aggregator(generators):
-        result = []
+        lowest = 0
+
+        # initial state
         for i in xrange(0, len(generators)):
-            try:
-                result.append(generators[i].next())
-            except StopIteration:
-                del generators[i]
-                i -= 1
-                if len(generators) == 0:
-                    return
+            if generators[i].hasMore():
+                lowest = i
+                break
 
-        while 1:
-            j = 0
-            for i in xrange(1, len(generators)):
-                if result[i]['published_at'] < result[j]['published_at']:
-                    j = i
+        # merge sort
+        for i in xrange(1, len(generators)):
+            if generators[i].hasMore() and generators[i].peek() < generators[lowest]:
+                lowest = i
 
-            yield result[j]
+        yield generators[lowest].next()
 
-            try:
-                result[j] = generators[j].next()
-            except StopIteration:
-                del generators[j]
-                j -= 1
-                if len(generators) == 0:
-                    return
-
-    return aggregator([afp(name), guardian(name), storyful(name)])
+    return aggregator([
+        PeekableGenerator(afp(name)),
+        PeekableGenerator(guardian(name)),
+        PeekableGenerator(storyful(name))
+    ])
 
 
 def search_for_person(name, page):
