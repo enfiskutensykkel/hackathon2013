@@ -57,10 +57,10 @@ def get_relevant_data(who, max_results=30):
         metadata = get_entities(data)
         summary, content = get_content(data)
 
-        yield url.rsplit('.xml', 1)[0], summary, content, metadata, title
+        yield url.rsplit('.xml', 1)[0], title, summary, content, metadata
 
 
 if __name__ == '__main__':
     # Example how to use this module
-    for url, summary, paragraphs, metadata, title in get_relevant_data("Barack Obama"):
+    for url, title, summary, paragraphs, metadata in get_relevant_data("Barack Obama"):
         print summary

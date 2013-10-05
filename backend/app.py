@@ -41,13 +41,13 @@ def storyful(name):
 
 # Generator for searching in AFP API
 def afp(name):
-    for paragraphs, metadata in search_afp_after_person(name):
+    for url, title, summary, paragraphs, metadata in search_afp_after_person(name):
         yield {
-            'title': None,
-            'summary': None,
+            'title': title,
+            'summary': summary,
             'text': '\n'.join(paragraphs),
             'metadata': metadata,
-            'href': None,
+            'href': url,
             'source': 'afp'
         }
 
