@@ -6,7 +6,7 @@ import json
 _api_key='x57tjyenbds4489ffjmcgdx3'
 
 
-def find_quotations_in_text(text, html=False):
+def get_semantic_data(text, html=False):
     """Finds all quotations in the given raw text.
     Usage: See example code at the bottom of the file
     """
@@ -22,12 +22,11 @@ def find_quotations_in_text(text, html=False):
 
     def iter_groups(data):
         for key, group in data.iteritems():
-            if not '_type' in group: continue
             yield group
 
     def iter_quotations(data):
         for group in iter_groups(data):
-            if group['_type'] == 'Quotation':
+            if group.get('_type') == 'Quotation':
                 person = group['person']
                 quote = group['quote']
 
@@ -38,7 +37,21 @@ def find_quotations_in_text(text, html=False):
 
                 yield name, quote, instances[0]['offset']
 
-    return iter_quotations(data)
+    def iter_persons(data):
+        for group in iter_groups(data):
+            if group.get('_type') == 'Person':
+                yield group['commonname']
+
+    def iter_topics(data):
+        for group in iter_groups(data):
+            if group.get('_typeGroup') == 'topics':
+                yield group['categoryName']
+
+    return {
+        'quotes': [x for x in iter_quotations(data)],
+        'topics': [x for x in iter_topics(data)],
+        'persons': [x for x in iter_persons(data)]
+    }
 
 
 if __name__ == '__main__':

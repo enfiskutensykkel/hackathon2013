@@ -1,2 +1,2 @@
-from calais import find_quotations_in_text
+from calais import get_semantic_data
 
