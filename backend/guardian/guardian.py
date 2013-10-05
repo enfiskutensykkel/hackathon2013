@@ -43,10 +43,38 @@ def get_story_title(story):
 def get_story_published_datetime(story):
 	return story['webPublicationDate']
 
+
+def search_guardian(tag, max_results=30):
+    per_page = 10
+
+    num_items = 0
+
+    page_index = 1
+
+    api_key='hackday2013'
+
+	url = "http://content.guardianapis.com/search?q=" + urllib2.quote(search_term) + "&page=" + str(page_index) + \
+			"&page-size=" + str(per_page) +  "&show-fields=all&show-snippets=all&api-key=" + api_key
+
+    while url is not None and num_items < max_results:
+        request = urllib2.Request(url)
+        data = json.loads(urllib2.urlopen(request).read())
+
+
+        page_index += 1
+        
+        url = 	url = "http://content.guardianapis.com/search?q=" + urllib2.quote(search_term) + "&page=" + str(page_index) + \
+			"&page-size=" + str(per_page) +  "&show-fields=all&show-snippets=all&api-key=" + api_key
+        stories = data['response']['results']
+
+        for item in stories:
+            num_items += 1
+            yield item
+
 if __name__ == '__main__':
 
 	# example
 	search_term = "Obama"
 
 	data = get_guardian_data(search_term)
-	print get_total_stories(data)
+	print data
