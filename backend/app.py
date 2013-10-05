@@ -136,7 +136,6 @@ def search_for_person(name, page):
 @app.route("/persons/<name>/")
 def persons_first_page(name):
     return jsonify(search_for_person(name, 0))
-    #return jsonify(get_storyful_data(name))
 
 
 @app.route("/persons/<name>/<int:page>")
