@@ -30,8 +30,8 @@ def get_content(data):
     return [p.text for p in content]
 
 
-def get_relevant_data(who):
-    data = urllib2.urlopen(base_url + '?%s=%s' % ('who_pers', quote(who))).read()
+def get_relevant_data(who, max_results=30):
+    data = urllib2.urlopen(base_url + '?%s=%s&rows=%d' % ('who_pers', quote(who), max_results)).read()
     refs = re.findall(r'<NewsItemRef\s+Duid="([^"]*)"\s+NewsItem="([^"]*)"\s*/>', data)
 
     for ref, url in refs:
