@@ -30,7 +30,7 @@ def storyful(name):
 
 # Generator for searching in AFP API
 def afp(name):
-    for url, title, summary, paragraphs, metadata in search_afp(name):
+    for url, date, title, summary, paragraphs, metadata in search_afp(name):
         yield {
             'title': title,
             'summary': summary,
@@ -38,7 +38,7 @@ def afp(name):
             'metadata': metadata,
             'href': url,
             'source': 'afp',
-            'published_at': None
+            'published_at': date.isoformat()
         }
 
 # Generator for searching in guardian API
