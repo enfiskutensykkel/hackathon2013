@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import urllib2
+import json
 
 api_key='x57tjyenbds4489ffjmcgdx3'
 
@@ -22,6 +23,26 @@ request = urllib2.Request('http://api.opencalais.com/tag/rs/enrich', headers={
     'accept': 'application/json'
 })
 result = urllib2.urlopen(request, data).read()
+
+data = json.loads(result)
+
+def iter_groups(data):
+    for key, group in data.iteritems():
+        if not '_type' in group: continue
+        yield group
+
+def iter_quotations(data):
+    for group in iter_groups(data):
+        if group['_type'] == 'Quotation':
+            person = group['person']
+            quote = group['quote']
+
+            name = data[person]['commonname']
+
+            yield name, quote
+
+
+print [x for x in iter_quotations(data)]
 
 #Web service URL for improved REST API is located at http://api.opencalais.com/tag/rs/enrich
 #Clients should create an HTTP POST request.
