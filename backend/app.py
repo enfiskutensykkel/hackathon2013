@@ -7,7 +7,7 @@ from flask import jsonify
 from calais import find_quotations_in_text
 
 from storyful import search_storyful
-from afp import search_afp_after_person
+from afp import search_afp
 from guardian import search_guardian
 
 app = Flask(__name__)
@@ -30,7 +30,7 @@ def storyful(name):
 
 # Generator for searching in AFP API
 def afp(name):
-    for url, title, summary, paragraphs, metadata in search_afp_after_person(name):
+    for url, title, summary, paragraphs, metadata in search_afp(name):
         yield {
             'title': title,
             'summary': summary,
