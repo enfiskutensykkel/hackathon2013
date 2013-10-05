@@ -8,6 +8,7 @@ from calais import find_quotations_in_text
 
 from storyful import search_storyful
 from afp import search_afp_after_person
+from guardian import search_guardian
 
 app = Flask(__name__)
 
@@ -30,12 +31,13 @@ def storyful(name):
     for story in search_storyful(name):
         if 'summary' in story:
             yield {
-                'title': None,
+                'title': story['title_clean'],
                 'summary': story['summary'],
                 'text': story['summary'],
                 'metadata': None,
                 'href': story['html_resource_url'],
-                'source': 'storyful'
+                'source': 'storyful',
+                'published_at': story['published_at']
             }
 
 
@@ -48,9 +50,22 @@ def afp(name):
             'text': '\n'.join(paragraphs),
             'metadata': metadata,
             'href': url,
-            'source': 'afp'
+            'source': 'afp',
+            'published_at': None
         }
 
+# Generator for searching in guardian API
+def guardian(name):
+    for story in search_guardian(name):
+        yield {
+            'title': story['fields']['headline'],
+            'summary': story['snippets']['body'] if 'body' in story['snippets'] else None,
+            'text': story['fields']['body'],
+            'metadata': None,
+            'href': story['webUrl'],
+            'source': 'guardian',
+            'published_at': story['webPublicationDate']
+        }
 
 # Aggregate the generators
 def search_name(name):
@@ -67,7 +82,7 @@ def search_name(name):
                 if len(generators) == 0:
                     break
 
-    return aggregator([afp(name), storyful(name)])
+    return aggregator([afp(name), guardian(name), storyful(name)])
 
 
 def search_for_person(name, page):
@@ -118,7 +133,6 @@ def search_for_person(name, page):
             'begin': old_length,
             'end': new_length
         }
-
         text += story['text']
         context['end'] = len(text)
         context_list.append(context)
