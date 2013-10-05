@@ -3,9 +3,44 @@
 import urllib2
 import json
 
-api_key='x57tjyenbds4489ffjmcgdx3'
+_api_key='x57tjyenbds4489ffjmcgdx3'
 
-data = """
+
+def find_quotations_in_text(text):
+    """Finds all quotations in the given raw text.
+    Usage: See example code at the bottom of the file
+    """
+
+    request = urllib2.Request('http://api.opencalais.com/tag/rs/enrich', headers={
+        'x-calais-licenseID': _api_key,
+        'content-type': 'text/raw',
+        'accept': 'application/json'
+    })
+    result = urllib2.urlopen(request, text).read()
+
+    data = json.loads(result)
+
+    def iter_groups(data):
+        for key, group in data.iteritems():
+            if not '_type' in group: continue
+            yield group
+
+    def iter_quotations(data):
+        for group in iter_groups(data):
+            if group['_type'] == 'Quotation':
+                person = group['person']
+                quote = group['quote']
+
+                name = data[person]['commonname']
+
+                yield name, quote
+
+    return iter_quotations(data)
+
+
+if __name__ == '__main__':
+    # Example
+    text = """
 Foreign military forces appear to have carried out a pre-dawn raid on a southern Somalian coastal town, apparently in pursuit of "a high-profile target" linked to the militant al-Shabaab group that was behind last month's Kenyan mall shootings.
 
 The pre-dawn raid – which initial but unconfirmed reports suggested may have involved US troops – took place in Barawe, in the lower Shabelle region 240km south of Mogadishu. It is the same town where US navy commandos killed a senior al-Qaida member four years ago.
@@ -17,39 +52,5 @@ The raid comes as Kenya's military confirmed the names of four al-Shabaab fighte
 The publication of the identities supports CCTV footage from the Nairobi mall published by a private TV station that shows no more than four attackers, contradicting earlier government statements that between 10 to 15 attackers were involved.
 """
 
-request = urllib2.Request('http://api.opencalais.com/tag/rs/enrich', headers={
-    'x-calais-licenseID': api_key,
-    'content-type': 'text/raw',
-    'accept': 'application/json'
-})
-result = urllib2.urlopen(request, data).read()
-
-data = json.loads(result)
-
-def iter_groups(data):
-    for key, group in data.iteritems():
-        if not '_type' in group: continue
-        yield group
-
-def iter_quotations(data):
-    for group in iter_groups(data):
-        if group['_type'] == 'Quotation':
-            person = group['person']
-            quote = group['quote']
-
-            name = data[person]['commonname']
-
-            yield name, quote
-
-
-print [x for x in iter_quotations(data)]
-
-#Web service URL for improved REST API is located at http://api.opencalais.com/tag/rs/enrich
-#Clients should create an HTTP POST request.
-#Document content should be passed as the body of the HTTP request.
-#Submitted content should be UTF-8 encoded.
-#Your Calais license, different processing and user options are specified as HTTP headers (key-value pairs) of the request. Following headers are mandatory:
-#x-calais-licenseID: value of this header is your license key
-#content-type: value of this parameter is the content type of submitted content, whether its text/raw, text/html, etc., as documented here
-#accept or outputformat: possible values are the expected MIME types of response, e.g., xml/rdf, application/json, etc., as documented here
-#Specification of all other processing and user options is optional.
+    for name, quote in find_quotations_in_text(text):
+        print "%s: %s" % (name, quote)
