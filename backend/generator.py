@@ -19,12 +19,14 @@ class PeekableGenerator(object):
 
     def peek(self):
         if not self.hasMore():
+            assert "Shouldn't happen"
             raise StopIteration
 
         return self.__element
 
     def next(self):
-        if not self.__isset:
+        if not self.hasMore():
+            assert "Shouldn't happen"
             raise StopIteration
 
         self.__more == self.__isset

@@ -34,7 +34,10 @@ def find_quotations_in_text(text, html=False):
                 instances = group.get('instances')
                 if not instances: continue
 
-                name = data[person]['commonname']
+                if 'commonname' in data[person]:
+                    name = data[person]['commonname']
+                else:
+                    name = data[person]['name']
 
                 yield name, quote, instances[0]['offset']
 

@@ -69,12 +69,13 @@ def search_name(name):
                 lowest = i
                 break
 
-        # merge sort
-        for i in xrange(1, len(generators)):
-            if generators[i].hasMore() and generators[i].peek() < generators[lowest]:
-                lowest = i
+        while 1:
+            # merge sort
+            for i in xrange(1, len(generators)):
+                if generators[i].hasMore() and generators[i].peek() < generators[lowest]:
+                    lowest = i
 
-        yield generators[lowest].next()
+            yield generators[lowest].next()
 
     return aggregator([
         PeekableGenerator(afp(name)),
@@ -89,7 +90,7 @@ def search_for_person(name, page):
     context_list = []
 
     max_calais_request_size = 32768
-    max_results = 20
+    max_results = 40
 
     def send_to_calais():
         for name, quote, offset in find_quotations_in_text(text, html=False):
@@ -101,7 +102,7 @@ def search_for_person(name, page):
                         'headline': context['title'],
                         'source': context['source'],
                         'url': context['url'],
-                        'date': "2013-10-05",
+                        'date': context['date'].strftime('%Y-%m-%dT%H:%M:%SZ'),
                         'people': "John Kerry; Liu Xiaobo",
                         'tags': "Asia;US;shutdown"
                     })
@@ -132,6 +133,7 @@ def search_for_person(name, page):
             'title': story['title'],
             'source': story['source'],
             'url': story['href'],
+            'date': story['published_at'],
             'begin': old_length,
             'end': new_length
         }
