@@ -5,6 +5,9 @@ import xml.etree.ElementTree as ET
 
 base_url = 'http://www.ipadafp.afp.com/afp-wanifra'
 
+# TODO: Dates as part of metadata
+# TODO: Geolocation as part of metadata
+
 
 def get_entities(data):
     tree = ET.fromstring(data)
@@ -26,8 +29,15 @@ def get_entities(data):
 
 def get_content(data):
     tree = ET.fromstring(data)
+
+    summary = None
+    for node in tree.findall('NewsItem/NewsComponent/NewsLines/NewsLine'):
+        if not node.find('NewsLineType[@FormalName="CatchLine"]') is None:
+            summary = node.find('NewsLineText').text
+            break
+
     content = tree.findall('NewsItem/NewsComponent/NewsComponent/ContentItem/DataContent/p')
-    return [p.text for p in content]
+    return summary, [p.text for p in content]
 
 
 def get_relevant_data(who, max_results=30):
@@ -36,19 +46,21 @@ def get_relevant_data(who, max_results=30):
     except urllib2.HTTPError:
         return
 
-    refs = re.findall(r'<NewsItemRef\s+Duid="([^"]*)"\s+NewsItem="([^"]*)"\s*/>', data)
+    tree = ET.fromstring(data)
+    refs = tree.findall('NewsItem/NewsComponent/NewsComponent')
 
-    for ref, url in refs:
+    for ref in refs:
+        url = ref.find('NewsItemRef').get('NewsItem')
+        title = ref.find('NewsLines/HeadLine').text
         data = urllib2.urlopen(url).read()
 
         metadata = get_entities(data)
-        content = get_content(data)
+        summary, content = get_content(data)
 
-        yield content, metadata
+        yield url.rsplit('.xml', 1)[0], summary, content, metadata, title
 
 
 if __name__ == '__main__':
     # Example how to use this module
-    for paragraphs, metadata in get_relevant_data("Barack Obama"):
-        print paragraphs
-        print metadata
+    for url, summary, paragraphs, metadata, title in get_relevant_data("Barack Obama"):
+        print summary
