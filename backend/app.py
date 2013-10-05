@@ -58,8 +58,8 @@ def afp(name):
 def guardian(name):
     for story in search_guardian(name):
         yield {
-            'title': story['fields']['headline']
-            'summary': story['snippets']['body'],
+            'title': story['fields']['headline'],
+            'summary': story['snippets']['body'] if 'body' in story['snippets'] else None,
             'text': story['fields']['body'],
             'metadata': None,
             'href': story['webUrl'],
@@ -97,7 +97,7 @@ def search_for_person(name, page):
             'url': story['href'],
             'begin': len(text),
         }
-        text += story['summary']
+        text += story['summary'] if story['source'] == 'storyful' else story['text']
         context['end'] = len(text)
         context_list.append(context)
 
