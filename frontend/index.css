@@ -1,0 +1,36 @@
+.mainWrapper
+{
+	border: 1px solid #000000;
+}
+
+.inputWrapper
+{
+	text-align: center;
+	background-color: #222299;
+	height: 50px;
+}
+
+.searchField
+{
+	width: 60%;
+	margin-top: 10px;
+}
+
+#quotesList .quotePart
+{
+	width: 700px ;
+  margin-left: auto ;
+  margin-right: auto ;
+
+}
+
+#quotesList .quotePart.date
+{
+	font-size: 12px;
+
+}
+
+#quotesList .quote
+{
+	word-wrap: break-word;
+}
