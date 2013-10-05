@@ -57,7 +57,11 @@ def search_guardian(search_term, max_results=30):
 
     while url is not None and num_items < max_results:
         request = urllib2.Request(url)
-        data = json.loads(urllib2.urlopen(request).read())
+        try:
+            data = json.loads(urllib2.urlopen(request).read())
+        except urllib2.HTTPError:
+            # TODO: When at the end of the search result, we end up here.
+            break
 
 
         page_index += 1

@@ -92,7 +92,7 @@ def search_for_person(name, page):
     max_results = 20
 
     def send_to_calais():
-        for name, quote, offset in find_quotations_in_text(text, html=True):
+        for name, quote, offset in find_quotations_in_text(text, html=False):
             for context in context_list:
                 if context['begin'] <= offset < context['end']:
                     data.append({
@@ -111,18 +111,22 @@ def search_for_person(name, page):
 
     text = ""
     for story in search_name(name):
-        if max_results <= 0: break
+        if max_results <= 0:
+            break
         max_results -= 1
 
+        story_text = story['text'][0:max_calais_request_size]
+
         old_length = len(text)
-        new_length = old_length + len(story['text'])
+        new_length = old_length + len(story_text)
 
         if new_length > max_calais_request_size:
             send_to_calais()
 
             text = ""
             old_length = 0
-            new_length = len(story['text'])
+            new_length = len(story_text)
+            context_list = []
 
         context = {
             'title': story['title'],
@@ -131,8 +135,7 @@ def search_for_person(name, page):
             'begin': old_length,
             'end': new_length
         }
-        text += story['text']
-        context['end'] = len(text)
+        text += story_text
         context_list.append(context)
 
     if text:
