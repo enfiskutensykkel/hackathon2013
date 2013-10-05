@@ -33,14 +33,38 @@ def receive_quote():
 def search_for_person(name, page):
     data = []
 
+    context_list = []
+
     #stories = get_storyful_data(name)['tag']['stories']
     text = ""
     for story in search_storyful(name):
         if 'summary' in story:
+            context = {
+                'title': story['title'],
+                'source': 'storyful',
+                'url': story['html_resource_url'],
+                'begin': len(text),
+            }
             text += story['summary']
+            context['end'] = len(text)
+            context_list.append(context)
 
-    for item in find_quotations_in_text(text, html=True):
-        data.append(item)
+    for name, quote, offset in find_quotations_in_text(text, html=True):
+        for context in context_list:
+            if context['begin'] <= offset < context['end']:
+                data.append({
+                    'who': name,
+                    'quote': quote,
+                    'headline': context['title'],
+                    'source': context['source'],
+                    'url': context['url'],
+                    'date': "2013-10-05",
+                    'people': "John Kerry; Liu Xiaobo",
+                    'tags': "Asia;US;shutdown"
+                })
+                break
+        else:
+            print "No match found!"
 
     return dict(
         data=data,

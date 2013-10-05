@@ -31,9 +31,12 @@ def find_quotations_in_text(text, html=False):
                 person = group['person']
                 quote = group['quote']
 
+                instances = group.get('instances')
+                if not instances: continue
+
                 name = data[person]['commonname']
 
-                yield name, quote
+                yield name, quote, instances[0]['offset']
 
     return iter_quotations(data)
 
