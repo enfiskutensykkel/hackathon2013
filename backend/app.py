@@ -42,7 +42,6 @@ def storyful(name):
                 'metadata': None,
                 'href': None
             }
-    #raise StopIteration  # We don't really need this
 
 
 # Generator for searching in AFP API
@@ -55,7 +54,6 @@ def afp(name):
             'metadata': metadata,
             'href': None
         }
-    #raise StopIteration  # We don't really need this
 
 
 # Aggregate the generators
