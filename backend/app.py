@@ -34,7 +34,7 @@ def storyful(name):
                 'summary': story['summary'],
                 'text': story['summary'],
                 'metadata': None,
-                'href': None,
+                'href': story['html_resource_url'],
                 'source': 'storyful'
             }
 
@@ -56,7 +56,9 @@ def afp(name):
 def search_name(name):
     def aggregator(generators):
         i = 0
-        while True:
+        max_results = 30
+        while max_results:
+            max_results -= 1
             try:
                 i = (i + 1) % len(generators)
                 yield generators[i].next()
@@ -73,35 +75,56 @@ def search_for_person(name, page):
 
     context_list = []
 
-    #stories = get_storyful_data(name)['tag']['stories']
+    max_calais_request_size = 32768
+    max_results = 20
+
+    def send_to_calais():
+        for name, quote, offset in find_quotations_in_text(text, html=True):
+            for context in context_list:
+                if context['begin'] <= offset < context['end']:
+                    data.append({
+                        'who': name,
+                        'quote': quote,
+                        'headline': context['title'],
+                        'source': context['source'],
+                        'url': context['url'],
+                        'date': "2013-10-05",
+                        'people': "John Kerry; Liu Xiaobo",
+                        'tags': "Asia;US;shutdown"
+                    })
+                    break
+            else:
+                print "No match found!"
+
     text = ""
     for story in search_name(name):
+        if max_results <= 0: break
+        max_results -= 1
+
+        old_length = len(text)
+        new_length = old_length + len(story['text'])
+
+        if new_length > max_calais_request_size:
+            send_to_calais()
+
+            text = ""
+            old_length = 0
+            new_length = len(story['text'])
+
         context = {
             'title': story['title'],
             'source': story['source'],
             'url': story['href'],
-            'begin': len(text),
+            'begin': old_length,
+            'end': new_length
         }
-        text += story['summary']
+
+        text += story['text']
         context['end'] = len(text)
         context_list.append(context)
 
-    for name, quote, offset in find_quotations_in_text(text, html=True):
-        for context in context_list:
-            if context['begin'] <= offset < context['end']:
-                data.append({
-                    'who': name,
-                    'quote': quote,
-                    'headline': context['title'],
-                    'source': context['source'],
-                    'url': context['url'],
-                    'date': "2013-10-05",
-                    'people': "John Kerry; Liu Xiaobo",
-                    'tags': "Asia;US;shutdown"
-                })
-                break
-        else:
-            print "No match found!"
+    if text:
+        send_to_calais()
 
     return dict(
         data=data,
