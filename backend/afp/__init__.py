@@ -1,1 +1,1 @@
-import afp
+from afp import get_relevant_data as search_afp_after_person
