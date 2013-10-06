@@ -38,17 +38,23 @@ def get_semantic_data(text, html=False):
                 else:
                     name = data[person]['name']
 
-                yield name, quote, instances[0]['offset']
+                yield name, quote, [instance['offset'] for instance in instances]
 
     def iter_persons(data):
         for group in iter_groups(data):
             if group.get('_type') == 'Person':
-                yield group['commonname']
+                instances = group.get('instances')
+                if not instances: continue
+
+                yield group.get('commonname') or group.get('name'), [instance['offset'] for instance in instances]
 
     def iter_topics(data):
         for group in iter_groups(data):
             if group.get('_typeGroup') == 'topics':
-                yield group['categoryName']
+                instances = group.get('instances')
+                if not instances: continue
+
+                yield group.get('categoryName'), [instance['offset'] for instance in instances]
 
     return {
         'quotes': [x for x in iter_quotations(data)],

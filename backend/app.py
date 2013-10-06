@@ -6,7 +6,6 @@ from flask import jsonify
 
 from calais import get_semantic_data
 from generator import PeekableGenerator
-from calais import find_quotations_in_text
 
 from storyful import search_storyful
 from afp import search_afp
@@ -83,22 +82,37 @@ def search_for_person(name, page):
     max_results = 20
 
     def send_to_calais():
-        for name, quote, offset in find_quotations_in_text(text, html=False):
-            for context in context_list:
-                if context['begin'] <= offset < context['end']:
-                    data.append({
-                        'who': name,
-                        'quote': quote,
-                        'headline': context['title'],
-                        'source': context['source'],
-                        'url': context['url'],
-                        'date': "2013-10-05",
-                        'people': "John Kerry; Liu Xiaobo",
-                        'tags': "Asia;US;shutdown"
-                    })
-                    break
-            else:
-                print "No match found!"
+        semantics = get_semantic_data(text)
+
+        for context in context_list: # This iterates over articles
+            persons = []
+            for name, offsets in semantics['persons']:
+                for offset in offsets:
+                    if context['begin'] <= offset < context['end']:
+                        persons.append(name)
+                        break
+
+            topics = []
+            for name, offsets in semantics['topics']:
+                for offset in offsets:
+                    if context['begin'] <= offset < context['end']:
+                        topics.append(name)
+                        break
+
+            for name, quote, offsets in semantics['quotes']:
+                for offset in offsets:
+                    if context['begin'] <= offset < context['end']:
+                        data.append({
+                            'who': name,
+                            'quote': quote,
+                            'headline': context['title'],
+                            'source': context['source'],
+                            'url': context['url'],
+                            'date': "2013-10-05",
+                            'people': persons,
+                            'tags': topics
+                        })
+                        break
 
     text = ""
     for story in search_name(name):
