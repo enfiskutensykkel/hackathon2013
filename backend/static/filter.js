@@ -17,6 +17,11 @@ function filterResult(json) {
 
 }
 
+function filterAdd (json)
+{
+	crossfilter.add(json);
+}
+
 function filterByTag(tag) {
 	if (!tag) {
 		return tagDimension.filterAll();

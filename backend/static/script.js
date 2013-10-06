@@ -6,6 +6,11 @@ $(document).ready (function ()
 });
 
 
+var text = "";
+var counterMax = 10;
+var counter = 0;
+var quotes = [];
+
 function addQuotes (item)
 {
 	$.tmpl( "quoteItemTmpl", item ).appendTo("#quotesList");
@@ -20,7 +25,12 @@ function addEvents ()
 	$(".searchField").keyup(function (e)
 	{
 		if (event.which == 13)
-			self.doSearch();
+		{
+			$("#quotesList").empty();
+			quotes = [];
+			self.doSearch($(this).val());
+			counter = 0;
+		}
 	});
 	
 	$(".searchField").focus(function ()
@@ -29,26 +39,42 @@ function addEvents ()
 	});
 }
 
-function doSearch (text)
+function doSearch (value, nextUrl)
 {
-	$("#quotesList").empty();
-	$("#quotesList").append("<div id='searchInfo' class='quotePart'>Searching...</div>");
+	text = value;
+	//$("#quotesList").empty();
+	//$("#quotesList").append("<div id='searchInfo' class='quotePart'>Searching...</div>");
 	$("#progress").show();
-	putSerch(text, onSearchResult);
+	putSerch(text, onSearchResult, nextUrl);
 }
 
-function onSearchResult (data)
+function onSearchResult (result)
 {
-	$("#searchInfo").remove();
-	$("#progress").hide();
-
-	data = filterResult(data.data);
-	addQuotes(data);	
+	for (var i=0; i<result.data.length; i++)
+	{
+		quotes.push(result.data[i]);
+	}
 	
-	$(".linkWrapper").empty();
-	$(".linkWrapper").append("<a class='filterLinkSpeaker selected' href='javascript:onRelatedLinks(true);'>Quotes from this person</a>");
-	$(".linkWrapper").append("<a class='filterLinkOthers' href='javascript:onRelatedLinks(false);'>Quotes from other people in articles related to this person</a>");		
+	if (result.next && counter < counterMax)
+	{
+		doSearch(text, result.next);
+		counter++;
+	}
+	else
+	{
+	
+		$("#searchInfo").remove();
+		$("#progress").hide();
 
+		data = filterResult(quotes);
+		addQuotes(quotes);	
+
+		$(".linkWrapper").empty();
+		$(".linkWrapper").append("<a class='filterLinkSpeaker selected' href='javascript:onRelatedLinks(true);'>Quotes from this person</a>");
+		$(".linkWrapper").append("<a class='filterLinkOthers' href='javascript:onRelatedLinks(false);'>Quotes from other people in articles related to this person</a>");		
+	
+	}
+	
 }
 
 function onRelatedLinks (useSpeaker)
