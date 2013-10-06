@@ -90,7 +90,7 @@ def search_for_person(name, page):
     context_list = []
 
     max_calais_request_size = 32768
-    max_results = 40
+    max_results = 10
 
     def send_to_calais():
         for name, quote, offset in find_quotations_in_text(text, html=False):
