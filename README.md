@@ -3,7 +3,7 @@ Can I quote you on that?
 
 An application to extract quotes from citations and sources and map them to who said it, when it was said and in the context it was said based on the articles and sources the quote appears in.
 
-This is a project done for the hackathon @ [Media Hack Day 2013](http://www.mediahackday.com/ "#mdh2013").
+This is a project done for the [hackathon](https://www.hackerleague.org/hackathons/wan-ifra-media-hack-day) @ [Media Hack Day 2013](http://www.mediahackday.com/ "#mdh2013").
 Contributors are
   * Katherine Mccurdy (k-means, kmccurdy)
   * Florian Winter (fwinter, fwinter555)
