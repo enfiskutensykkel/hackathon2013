@@ -81,6 +81,17 @@ body
 	font-size: 14px;
 }
 
+#quotesList .quotePart.thumb
+{
+	margin-top: 14px;
+}
+
+#quotesList .quotePart.tagList
+{
+font-size: 14px;
+margin-top: 12px;
+}
+
 .quoteItem
 {
 	border: 1px solid #eee;
