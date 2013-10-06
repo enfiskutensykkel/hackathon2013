@@ -91,8 +91,6 @@ def search_name(name):
 
 
 def search_for_person(name, page):
-    data = []
-
     context_list = []
 
     max_calais_request_size = 32768
@@ -127,7 +125,7 @@ def search_for_person(name, page):
                 topics.append(name)
 
             for name, quote in semantics['quotes']:
-                data.append({
+                yield {
                     'who': name,
                     'quote': quote,
                     'headline': context['title'],
@@ -137,22 +135,23 @@ def search_for_person(name, page):
                     'people': persons,
                     'thumbnail': context['thumb'],
                     'tags': topics
-                })
+                }
 
-    return dict(
-        data=data,
-        next=None
-    )
 
+def get_person_page(name, page):
+    return {
+        'data': [x for x in search_for_person(name, page)],
+        'next': None
+    }
 
 @app.route("/persons/<name>/")
 def persons_first_page(name):
-    return jsonify(search_for_person(name, 0))
+    return jsonify(get_person_page(name, 0))
 
 
 @app.route("/persons/<name>/<int:page>")
 def persons_page(name, page):
-    return jsonify(search_for_person(name, page))
+    return jsonify(get_person_page(name, page))
 
 
 if __name__ == "__main__":
