@@ -98,8 +98,24 @@ def search_for_person(name, page):
     max_calais_request_size = 32768
     max_results = 10
 
-    def send_to_calais():
-        semantics = get_semantic_data(text)
+    for story in search_name(name):
+        if max_results <= 0:
+            break
+        max_results -= 1
+
+        story_text = story['text'][0:max_calais_request_size]
+
+        context = {
+            'title': story['title'],
+            'source': story['source'],
+            'url': story['href'],
+            'thumb': story['thumbnail'],
+            'date': story['published_at']
+        }
+
+        context_list.append(context)
+
+        semantics = get_semantic_data(story_text)
 
         for context in context_list: # This iterates over articles
             persons = []
@@ -122,27 +138,6 @@ def search_for_person(name, page):
                     'thumbnail': context['thumb'],
                     'tags': topics
                 })
-
-    text = ""
-    for story in search_name(name):
-        if max_results <= 0:
-            break
-        max_results -= 1
-
-        story_text = story['text'][0:max_calais_request_size]
-
-        context = {
-            'title': story['title'],
-            'source': story['source'],
-            'url': story['href'],
-            'date': story['published_at'],
-            'thumb': story['thumbnail'],
-            'date': story['published_at']
-        }
-        text = story_text
-        context_list.append(context)
-
-        send_to_calais()
 
     return dict(
         data=data,
