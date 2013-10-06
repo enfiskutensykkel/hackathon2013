@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask
-from flask import request
 from flask import jsonify
 
 from calais import get_semantic_data
-from generator import PeekableGenerator
 
 from storyful import search_storyful
 from afp import search_afp
