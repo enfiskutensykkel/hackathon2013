@@ -59,7 +59,7 @@ def guardian(name):
             'metadata': None,
             'href': story['webUrl'],
             'source': 'guardian',
-            'thumbnail': None,
+            'thumbnail': story['fields']['thumbnail'] if 'thumbnail' in story['fields'] else None,
             'published_at': dt.datetime.strptime(story['webPublicationDate'], '%Y-%m-%dT%H:%M:%SZ')
         }
 

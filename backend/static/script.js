@@ -38,8 +38,30 @@ function onSearchResult (data)
 {
 	$("#searchInfo").remove();
 	$("#progress").hide();
+
+	data = filterResult(data.data);
+	addQuotes(data);	
 	
-	fdata = filterResult(data.data);
-	addQuotes({data: fdata});	
+	$(".linkWrapper").empty();
+	$(".linkWrapper").append("<a class='filterLinkSpeaker selected' href='javascript:onRelatedLinks(true);'>Quotes from this person</a>");
+	$(".linkWrapper").append("<a class='filterLinkOthers' href='javascript:onRelatedLinks(false);'>Quotes from other people in articles related to this person</a>");		
+
+}
+
+function onRelatedLinks (useSpeaker)
+{
+	$("#quotesList").empty();
+	filterBySpeaker(useSpeaker);
+
+	var data = returnFilteredDataObj();
+	addQuotes(data);
 	
+	if (useSpeaker) {
+		$(".filterLinkOthers").removeClass('selected');
+		$(".filterLinkSpeaker").addClass('selected');
+	} else {
+		$(".filterLinkSpeaker").removeClass('selected');
+		$(".filterLinkOthers").addClass('selected');		
+	}
+
 }
