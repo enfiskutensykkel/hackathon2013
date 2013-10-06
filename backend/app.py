@@ -119,7 +119,7 @@ def search_for_person(name, page):
                     'url': context['url'],
                     'date': timestamp(context['date'].utctimetuple()),
                     'people': persons,
-                            'thumbnail': context['thumb'],
+                    'thumbnail': context['thumb'],
                     'tags': topics
                 })
 
