@@ -14,6 +14,9 @@ var quotes = [];
 function addQuotes (item)
 {
 	$.tmpl( "quoteItemTmpl", item ).appendTo("#quotesList");
+	$(".tag").on("click", function() { 
+		return $(this).hasClass('selected') ?  onTagFilter("") : onTagFilter(this.innerHTML); 
+	})
 }
 
 function addEvents ()
@@ -90,4 +93,17 @@ function onRelatedLinks (useSpeaker)
 		$(".filterLinkOthers").addClass('selected');		
 	}
 
+}
+
+function onTagFilter (tag) 
+{
+	$("#quotesList").empty();
+	filterByTag(tag);
+	var data = returnFilteredDataObj();
+	addQuotes(data);
+	if (!tag) {
+		$(".tag").removeClass('selected')
+	} else {
+		$(".tag." + tag).addClass('selected');
+	}
 }
