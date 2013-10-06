@@ -107,3 +107,20 @@ body
 	position: absolute;
     width: 189px;
 }
+
+.filterLinkSpeaker 
+{
+	text-align: left;
+}
+
+.filterLinkOthers 
+{
+	text-align: right;
+}
+
+.linkWrapper > .selected 
+{
+	background-color: #fff;
+	border-radius: 0 0 5px 5px;
+	border: 1px solid #ccc;
+}

@@ -1,26 +1,30 @@
-var speakerDimension, timeDimension, tagDimension, peopleDimension;
+var speakerDimension, timeDimension, tagDimension, peopleDimension, speaker;
 
 function filterResult(json) {
 
 	var data = crossfilter(json);
-
-	var search_term = $(".searchField").val();
 
 	speakerDimension = data.dimension(function(d) {return d.who;});
 	timeDimension = data.dimension(function(d) {return new Date(d.date);});
 	tagDimension = data.dimension(function(d) {return d.tags;});
 	peopleDimension = data.dimension(function(d) {return d.people;});
 
-	speakerDimension.filter(search_term);
+	speaker = $(".searchField").val();
 
-	return timeDimension.top(Infinity);
+	filterBySpeaker(true);
+
+	return returnFilteredDataObj();
 
 }
 
 function filterByTag(tag) {
-	tagDimension.filter(function(d) {return d.indexOf(tag) > 0;})
+	tagDimension.filter(function(d) {return d.indexOf(tag) > 0;});
 }
 
-function filterByPeople(person) {
-	peopleDimension.filter(function(d) {return d.indexOf(person) > 0;})
+function filterBySpeaker(useSpeaker) {
+	return speakerDimension.filterFunction(function(d) { return useSpeaker ? d == speaker : d != speaker;});
+}
+
+function returnFilteredDataObj() {
+	return {data: timeDimension.top(Infinity), next: null};
 }
