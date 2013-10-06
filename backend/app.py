@@ -2,6 +2,7 @@
 
 from flask import Flask
 from flask import jsonify
+from flask import url_for
 import datetime as dt
 from calendar import timegm as timestamp
 
@@ -11,6 +12,8 @@ from generator import PeekableGenerator
 from storyful import search_storyful
 from afp import search_afp
 from guardian import search_guardian
+
+import threading
 
 app = Flask(__name__)
 
@@ -138,10 +141,43 @@ def search_for_person(name, page):
                 }
 
 
+class SearchRequest:
+    def __init__(self, name):
+        self.thread = threading.Thread(target=self.run)
+        self.items = []
+        self.name = name
+        self.lock = threading.Lock()
+        self.cv = threading.Condition()
+        self.thread.start()
+
+    def get_page(self, page):
+        with self.cv:
+            while page >= len(self.items):
+                print "Waiting for page %d" % page
+                self.cv.wait()
+            return self.items[page]
+
+    def run(self):
+        print "Started request for %s" % self.name
+        for result in search_for_person(self.name, 0):
+            with self.cv:
+                print "Got page %d" % len(self.items)
+                self.items.append(result)
+                self.cv.notify_all()
+
+
+cache = dict()
+
+
 def get_person_page(name, page):
+    request = cache.get(name)
+    if not request:
+        request = SearchRequest(name)
+        cache[name] = request
+
     return {
-        'data': [x for x in search_for_person(name, page)],
-        'next': None
+        'data': [request.get_page(page)],
+        'next': url_for('persons_page', name=name, page=page + 1)
     }
 
 @app.route("/persons/<name>/")
