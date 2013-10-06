@@ -22,7 +22,7 @@ function addQuotes (item)
 function addEvents ()
 {
 	var self = this;
-	$(".searchField").keyup(function (e)
+	$(".searchField").keyup(function (event)
 	{
 		if (event.which == 13)
 		{
