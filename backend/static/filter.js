@@ -18,7 +18,10 @@ function filterResult(json) {
 }
 
 function filterByTag(tag) {
-	tagDimension.filter(function(d) {return d.indexOf(tag) > 0;});
+	if (!tag) {
+		return tagDimension.filterAll();
+	}
+	return tagDimension.filterFunction(function(d) { return d.indexOf(tag) >= 0; });
 }
 
 function filterBySpeaker(useSpeaker) {
