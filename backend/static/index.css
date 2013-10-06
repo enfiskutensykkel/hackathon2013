@@ -1,10 +1,17 @@
+
+body
+{
+	background-color: #eee;
+}
+
 .mainWrapper
 {
+	position: relative;
 	width: 944px;
 	min-height: 500px;
 	margin-left: auto;
 	margin-right: auto;
-	background-color: #eee;
+	background-color: #fff;
 	border-radius: 0 0 5px 5px;
 	border: 1px solid #ccc;
 }
@@ -33,6 +40,7 @@
 	font-size: 14px;
 }
 
+
 #quotesList .quotePart
 {
 	width: 700px ;
@@ -44,19 +52,27 @@
 #quotesList .quotePart.date
 {
 	font-size: 12px;
-
+	text-transform:capitalize;
 }
 
 #quotesList .quotePart.quote
 {
 	font-style: italic;
 	word-wrap: break-word;
+	margin-top: 2px;
 }
 
 #quotesList .quotePart .who
 {
 	font-weight: bold;
 	font-size: 14px;
+}
+
+.quoteItem
+{
+	border: 1px solid #eee;
+	margin: 8px 20px 8px 20px;
+	padding-top: 5px;
 }
 
 #progress
@@ -70,4 +86,9 @@
 	background-color: #555555;
 	opacity:0.4;
 	display: none;
+}
+
+#searchInfo
+{
+	text-align: center;
 }

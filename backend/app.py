@@ -5,6 +5,8 @@ from flask import request
 from flask import jsonify
 
 from calais import get_semantic_data
+from generator import PeekableGenerator
+from calais import find_quotations_in_text
 
 from storyful import search_storyful
 from afp import search_afp
@@ -81,8 +83,7 @@ def search_for_person(name, page):
     max_results = 20
 
     def send_to_calais():
-        semantics = get_semantic_data(text)
-        for name, quote, offset in semantics['quotes']:
+        for name, quote, offset in find_quotations_in_text(text, html=False):
             for context in context_list:
                 if context['begin'] <= offset < context['end']:
                     data.append({
