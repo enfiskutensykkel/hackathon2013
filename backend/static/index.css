@@ -92,6 +92,14 @@ font-size: 14px;
 margin-top: 12px;
 }
 
+#quotesList .tagList .tag
+{
+	border: 1px solid #999;
+	background-color: #eee;
+	padding: 2px;
+	margin-right: 7px;
+}
+
 .quoteItem
 {
 	border: 1px solid #eee;
