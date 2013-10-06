@@ -3,6 +3,7 @@
 from flask import Flask
 from flask import jsonify
 import datetime as dt
+from calendar import timegm as timestamp
 
 from calais import get_semantic_data
 from generator import PeekableGenerator
@@ -118,7 +119,7 @@ def search_for_person(name, page):
                             'headline': context['title'],
                             'source': context['source'],
                             'url': context['url'],
-                            'date': context['date'].strftime('%Y-%m-%dT%H:%M:%SZ'),
+                            'date':  timestamp(context['date'].utctimetuple()),
                             'people': persons,
                             'tags': topics
                         })
