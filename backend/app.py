@@ -2,8 +2,10 @@
 
 from flask import Flask
 from flask import jsonify
+import datetime as dt
 
 from calais import get_semantic_data
+from generator import PeekableGenerator
 
 from storyful import search_storyful
 from afp import search_afp
@@ -23,7 +25,7 @@ def storyful(name):
                 'metadata': None,
                 'href': story['html_resource_url'],
                 'source': 'storyful',
-                'published_at': story['published_at']
+                'published_at': dt.datetime.strptime(story['published_at'], '%Y-%m-%dT%H:%M:%SZ')
             }
 
 
@@ -37,8 +39,9 @@ def afp(name):
             'metadata': metadata,
             'href': url,
             'source': 'afp',
-            'published_at': date.isoformat()
+            'published_at': date
         }
+
 
 # Generator for searching in guardian API
 def guardian(name):
@@ -50,25 +53,34 @@ def guardian(name):
             'metadata': None,
             'href': story['webUrl'],
             'source': 'guardian',
-            'published_at': story['webPublicationDate']
+            'published_at': dt.datetime.strptime(story['webPublicationDate'], '%Y-%m-%dT%H:%M:%SZ')
         }
+
 
 # Aggregate the generators
 def search_name(name):
     def aggregator(generators):
-        i = 0
-        max_results = 30
-        while max_results:
-            max_results -= 1
-            try:
-                i = (i + 1) % len(generators)
-                yield generators[i].next()
-            except StopIteration:
-                del generators[i]
-                if len(generators) == 0:
-                    break
+        lowest = 0
 
-    return aggregator([afp(name), guardian(name), storyful(name)])
+        # initial state
+        for i in xrange(0, len(generators)):
+            if generators[i].hasMore():
+                lowest = i
+                break
+
+        while 1:
+            # merge sort
+            for i in xrange(1, len(generators)):
+                if generators[i].hasMore() and generators[i].peek()['published_at'] > generators[lowest].peek()['published_at']:
+                    lowest = i
+
+            yield generators[lowest].next()
+
+    return aggregator([
+        PeekableGenerator(afp(name)),
+        PeekableGenerator(guardian(name)),
+        PeekableGenerator(storyful(name))
+    ])
 
 
 def search_for_person(name, page):
@@ -77,7 +89,7 @@ def search_for_person(name, page):
     context_list = []
 
     max_calais_request_size = 32768
-    max_results = 20
+    max_results = 10
 
     def send_to_calais():
         semantics = get_semantic_data(text)
@@ -106,7 +118,7 @@ def search_for_person(name, page):
                             'headline': context['title'],
                             'source': context['source'],
                             'url': context['url'],
-                            'date': "2013-10-05",
+                            'date': context['date'].strftime('%Y-%m-%dT%H:%M:%SZ'),
                             'people': persons,
                             'tags': topics
                         })
@@ -135,6 +147,7 @@ def search_for_person(name, page):
             'title': story['title'],
             'source': story['source'],
             'url': story['href'],
+            'date': story['published_at'],
             'begin': old_length,
             'end': new_length
         }
