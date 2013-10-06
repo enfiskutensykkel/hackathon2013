@@ -94,12 +94,12 @@ def search_name(name):
 
 
 def search_for_person(name, page):
-    context_list = []
-
     max_calais_request_size = 32768
-    max_results = 10
+    max_results = 100
 
     for story in search_name(name):
+        data = []
+
         if max_results <= 0:
             break
         max_results -= 1
@@ -114,31 +114,30 @@ def search_for_person(name, page):
             'date': story['published_at']
         }
 
-        context_list.append(context)
-
         semantics = get_semantic_data(story_text)
 
-        for context in context_list: # This iterates over articles
-            persons = []
-            for name in semantics['persons']:
-                persons.append(name)
+        persons = []
+        for name in semantics['persons']:
+            persons.append(name)
 
-            topics = []
-            for name in semantics['topics']:
-                topics.append(name)
+        topics = []
+        for name in semantics['topics']:
+            topics.append(name)
 
-            for name, quote in semantics['quotes']:
-                yield {
-                    'who': name,
-                    'quote': quote,
-                    'headline': context['title'],
-                    'source': context['source'],
-                    'url': context['url'],
-                    'date': timestamp(context['date'].utctimetuple()),
-                    'people': persons,
-                    'thumbnail': context['thumb'],
-                    'tags': topics
-                }
+        for name, quote in semantics['quotes']:
+            data.append({
+                'who': name,
+                'quote': quote,
+                'headline': context['title'],
+                'source': context['source'],
+                'url': context['url'],
+                'date': timestamp(context['date'].utctimetuple()),
+                'people': persons,
+                'thumbnail': context['thumb'],
+                'tags': topics
+            })
+
+        yield data
 
 
 class SearchRequest:
@@ -159,10 +158,10 @@ class SearchRequest:
 
     def run(self):
         print "Started request for %s" % self.name
-        for result in search_for_person(self.name, 0):
+        for data in search_for_person(self.name, 0):
             with self.cv:
-                print "Got page %d" % len(self.items)
-                self.items.append(result)
+                print "Got page %d: %d" % (len(self.items), len(data))
+                self.items.append(data)
                 self.cv.notify_all()
 
 
@@ -176,7 +175,7 @@ def get_person_page(name, page):
         cache[name] = request
 
     return {
-        'data': [request.get_page(page)],
+        'data': request.get_page(page),
         'next': url_for('persons_page', name=name, page=page + 1)
     }
 
