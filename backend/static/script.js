@@ -56,6 +56,7 @@ function onSearchResult (result)
 		if (!cxData) {
 			$("#searchInfo").remove();
 			$("#progress").hide();
+			$("#quotesList").empty();
 
 			data = filterResult(quotes);
 			addQuotes(data);	
@@ -64,6 +65,7 @@ function onSearchResult (result)
 
 			$("#searchInfo").remove();
 			$("#progress").hide();
+			$("#quotesList").empty();
 
 			data = filterAdd([result.data[i]]);
 			addQuotes(data);
@@ -85,6 +87,7 @@ function onSearchResult (result)
 	
 		$("#searchInfo").remove();
 		$("#progress").hide();
+		$("#quotesList").empty();
 
 		//data = filterResult(quotes);
 		addQuotes(data);	
