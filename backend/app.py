@@ -55,7 +55,7 @@ def guardian(name):
         yield {
             'title': story['fields']['headline'],
             'summary': story['snippets']['body'] if 'body' in story['snippets'] else None,
-            'text': story['fields']['body'],
+            'text': story['fields'].get('body') or "",
             'metadata': None,
             'href': story['webUrl'],
             'source': 'guardian',
@@ -114,28 +114,29 @@ def search_for_person(name, page):
             'date': story['published_at']
         }
 
-        semantics = get_semantic_data(story_text)
+        if len(story_text):
+            semantics = get_semantic_data(story_text)
 
-        persons = []
-        for name in semantics['persons']:
-            persons.append(name)
+            persons = []
+            for name in semantics['persons']:
+                persons.append(name)
 
-        topics = []
-        for name in semantics['topics']:
-            topics.append(name)
+            topics = []
+            for name in semantics['topics']:
+                topics.append(name)
 
-        for name, quote in semantics['quotes']:
-            data.append({
-                'who': name,
-                'quote': quote,
-                'headline': context['title'],
-                'source': context['source'],
-                'url': context['url'],
-                'date': timestamp(context['date'].utctimetuple()),
-                'people': persons,
-                'thumbnail': context['thumb'],
-                'tags': topics
-            })
+            for name, quote in semantics['quotes']:
+                data.append({
+                    'who': name,
+                    'quote': quote,
+                    'headline': context['title'],
+                    'source': context['source'],
+                    'url': context['url'],
+                    'date': timestamp(context['date'].utctimetuple()),
+                    'people': persons,
+                    'thumbnail': context['thumb'],
+                    'tags': topics
+                })
 
         yield data
 
