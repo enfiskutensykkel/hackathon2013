@@ -13,15 +13,18 @@ Contributors are
 APIs
 ----
 
-We read data from the AFP, theguardian and the storyful API.
-We make use of the [OpenCalais](http://www.opencalais.com/) to extract semantic data from the data delivered by the APIs.
+We read data from the 
+[AFP](http://www.ipadafp.afp.com/mediahackdays/index.php?p=doc),
+[theguardian](http://explorer.content.guardianapis.com/#/)
+and the [storyful](http://github.com/storyful/StoryfulApiDoc) APIs.
+We make use of [OpenCalais](http://www.opencalais.com/) to extract semantic data from the data delivered by the APIs.
 
 Libraries
 ---------
 Libraries we use:
-  * jQuery and jQuery template
-  * crossfire
-  * Flask
+  * jQuery and jQuery template for pretty front-end stuff
+  * crossfilter for managing large data objects in JavaScript
+  * Flask for Python back-end which reads from the APIs and posting and reading result from OpenCalais
 
 
 Hosting
