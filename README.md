@@ -6,9 +6,9 @@ An application to extract quotes from citations and sources and map them to who 
 This is a project done for the hackathon @ [Media Hack Day 2013](http://www.mediahackday.com/ "#mdh2013").
 Contributors are
   * Katherine Mccurdy (k-means, kmccurdy)
-  * Florian Winter (fwinter, 
-  * Martin Halvorsen
-  * Jonas Markussen
+  * Florian Winter (fwinter, fwinter555)
+  * Martin Halvorsen (marty, shadowano)
+  * Jonas Markussen (enfiskutensykkel)
 
 APIs
 ----
