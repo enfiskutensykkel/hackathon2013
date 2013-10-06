@@ -3,6 +3,7 @@
 from flask import Flask
 from flask import jsonify
 from flask import url_for
+from flask import redirect
 import datetime as dt
 from calendar import timegm as timestamp
 
@@ -189,6 +190,10 @@ def persons_first_page(name):
 def persons_page(name, page):
     return jsonify(get_person_page(name, page))
 
+
+@app.route("/")
+def index():
+    return redirect("/static/index.html")
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", debug=True)

@@ -1,7 +1,8 @@
 Can I quote you on that?
 ========================
 
-An application to extract quotes from citations and sources and map them to who said it, when it was said and in the context it was said based on the articles and sources the quote appears in.
+An application to extract quotes from citations and news sources and map them to who said it, 
+when it was said and in the context it was said based on the articles and sources the quote appears in.
 
 This is a project done for the [hackathon](https://www.hackerleague.org/hackathons/wan-ifra-media-hack-day) @ [Media Hack Day 2013](http://www.mediahackday.com/ "#mdh2013").
 Contributors are
@@ -17,14 +18,14 @@ We read data from the
 [AFP](http://www.ipadafp.afp.com/mediahackdays/index.php?p=doc),
 [theguardian](http://explorer.content.guardianapis.com/#/)
 and the [storyful](http://github.com/storyful/StoryfulApiDoc) APIs.
-We make use of the [OpenCalais](http://www.opencalais.com/) to extract semantic data from the data delivered by the APIs.
+We make use of [OpenCalais](http://www.opencalais.com/) to extract semantic data from the data delivered by the APIs.
 
 Libraries
 ---------
 Libraries we use:
-  * jQuery and jQuery template
-  * crossfire
-  * Flask
+  * jQuery and jQuery template for pretty front-end stuff
+  * crossfilter for managing large data objects in JavaScript
+  * Flask for Python back-end which reads from the APIs and posting and reading result from OpenCalais
 
 
 Hosting
@@ -32,4 +33,4 @@ Hosting
 The application is hosted on [heroku](http://www.heroku.com).
 
 The application is running here:
-http://peaceful-waters-6158.herokuapp.com/static/index.html
+http://peaceful-waters-6158.herokuapp.com/
