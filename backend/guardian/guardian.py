@@ -65,7 +65,7 @@ def search_guardian(search_term, max_results=30):
 
 
         page_index += 1
-        
+
         url = "http://content.guardianapis.com/search?q=" + urllib2.quote(search_term) + "&page=" + str(page_index) + "&page-size=" + str(per_page) +  "&show-fields=all&show-snippets=all&api-key=" + api_key
         stories = data['response']['results']
 
@@ -79,4 +79,6 @@ if __name__ == '__main__':
     search_term = "Obama"
 
     data = search_guardian(search_term)
-    print data
+    for res in data:
+        print res['fields']['thumbnail']
+        break
