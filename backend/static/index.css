@@ -11,6 +11,8 @@ body
 	text-align: center;
 	padding-top: 16px;
 	font-size: 35px;
+	
+	background-image:url('texturebg.png');
 }
 
 .mainWrapper
@@ -33,11 +35,13 @@ body
 .inputWrapper
 {
 	text-align: center;
-	height: 50px;
+	height: 80px;
 	
 	background-color: #222222;
 	border-color: #080808;
 	border-radius: 0 0 5px 5px;
+	
+	background-image:url('texturebg.png');
 }
 
 .searchField
@@ -106,4 +110,20 @@ body
 {
 	position: absolute;
     width: 189px;
+	opacity:0.4;
+}
+
+#iconQuote
+{
+	margin-left: 10px;
+	height: 80px;
+}
+
+.poweredby
+{
+	opacity:0.8;
+	text-align: left;
+	margin: 14px;
+	color: #fff;
+	font-size: 14px;
 }
