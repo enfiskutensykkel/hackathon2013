@@ -32,4 +32,4 @@ Hosting
 The application is hosted on [heroku](http://www.heroku.com).
 
 The application is running here:
-http://peaceful-waters-6158.herokuapp.com/static/index.html
+http://peaceful-waters-6158.herokuapp.com/
