@@ -67,7 +67,7 @@ function onSearchResult (result)
 		$("#progress").hide();
 
 		data = filterResult(quotes);
-		addQuotes(quotes);	
+		addQuotes(data);	
 
 		$(".linkWrapper").empty();
 		$(".linkWrapper").append("<a class='filterLinkSpeaker selected' href='javascript:onRelatedLinks(true);'>Quotes from this person</a>");
