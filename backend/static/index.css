@@ -4,6 +4,15 @@ body
 	background-color: #eee;
 }
 
+.header
+{
+	background-color: #222222;
+	color: #FFF;
+	text-align: center;
+	padding-top: 16px;
+	font-size: 35px;
+}
+
 .mainWrapper
 {
 	position: relative;
@@ -91,4 +100,10 @@ body
 #searchInfo
 {
 	text-align: center;
+}
+
+#logoQuote
+{
+	position: absolute;
+    width: 189px;
 }
