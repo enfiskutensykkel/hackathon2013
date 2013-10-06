@@ -1,6 +1,6 @@
 
 
-function putSerch (text, cbResult)
+function putSerch (text, cbResult, nextUrl)
 {
 	/*
 	var data = 
@@ -18,10 +18,13 @@ function putSerch (text, cbResult)
 	cbResult(data);
 	*/
 	
+	var url = "/persons/"+text+"/";
 	
+	if (nextUrl)
+		url = nextUrl;
 	
 	$.ajax({
-		url : "/persons/barack%20obama/",
+		url : url,
 		type: 'get',
 		success : function(data, textStatus, jqXHR)
 		{
