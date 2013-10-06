@@ -96,33 +96,24 @@ def search_for_person(name, page):
 
         for context in context_list: # This iterates over articles
             persons = []
-            for name, offsets in semantics['persons']:
-                for offset in offsets:
-                    if context['begin'] <= offset < context['end']:
-                        persons.append(name)
-                        break
+            for name in semantics['persons']:
+                persons.append(name)
 
             topics = []
-            for name, offsets in semantics['topics']:
-                for offset in offsets:
-                    if context['begin'] <= offset < context['end']:
-                        topics.append(name)
-                        break
+            for name in semantics['topics']:
+                topics.append(name)
 
-            for name, quote, offsets in semantics['quotes']:
-                for offset in offsets:
-                    if context['begin'] <= offset < context['end']:
-                        data.append({
-                            'who': name,
-                            'quote': quote,
-                            'headline': context['title'],
-                            'source': context['source'],
-                            'url': context['url'],
-                            'date': context['date'].strftime('%Y-%m-%dT%H:%M:%SZ'),
-                            'people': persons,
-                            'tags': topics
-                        })
-                        break
+            for name, quote in semantics['quotes']:
+                data.append({
+                    'who': name,
+                    'quote': quote,
+                    'headline': context['title'],
+                    'source': context['source'],
+                    'url': context['url'],
+                    'date': context['date'].strftime('%Y-%m-%dT%H:%M:%SZ'),
+                    'people': persons,
+                    'tags': topics
+                })
 
     text = ""
     for story in search_name(name):
@@ -132,29 +123,15 @@ def search_for_person(name, page):
 
         story_text = story['text'][0:max_calais_request_size]
 
-        old_length = len(text)
-        new_length = old_length + len(story_text)
-
-        if new_length > max_calais_request_size:
-            send_to_calais()
-
-            text = ""
-            old_length = 0
-            new_length = len(story_text)
-            context_list = []
-
         context = {
             'title': story['title'],
             'source': story['source'],
             'url': story['href'],
-            'date': story['published_at'],
-            'begin': old_length,
-            'end': new_length
+            'date': story['published_at']
         }
-        text += story_text
+        text = story_text
         context_list.append(context)
 
-    if text:
         send_to_calais()
 
     return dict(
