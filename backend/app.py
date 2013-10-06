@@ -72,7 +72,7 @@ def search_name(name):
         while 1:
             # merge sort
             for i in xrange(1, len(generators)):
-                if generators[i].hasMore() and generators[i].peek() < generators[lowest]:
+                if generators[i].hasMore() and generators[i].peek()['published_at'] > generators[lowest].peek()['published_at']:
                     lowest = i
 
             yield generators[lowest].next()

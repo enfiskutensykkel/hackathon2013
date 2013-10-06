@@ -3,6 +3,7 @@
 
 class PeekableGenerator(object):
     def __init__(self, generator):
+        self.debug = generator
         self.__generator = generator
         self.__element = None
         self.__isset = False
