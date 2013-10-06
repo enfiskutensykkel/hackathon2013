@@ -39,7 +39,7 @@ function onSearchResult (data)
 	$("#searchInfo").remove();
 	$("#progress").hide();
 	
-	addQuotes(data);	
-	filterResult(data);
+	fdata = filterResult(data.data);
+	addQuotes({data: fdata});	
 	
 }
