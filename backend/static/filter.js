@@ -9,7 +9,10 @@ function filterResult(json) {
 	tagDimension = data.dimension(function(d) {return d.tags;});
 	peopleDimension = data.dimension(function(d) {return d.people;});
 
-	speaker = $(".searchField").val();
+	speaker = $(".searchField").val().replace(/(\b)([a-zA-Z])/g,
+           function(firstLetter){
+              return   firstLetter.toUpperCase();
+           });;
 
 	filterBySpeaker(true);
 
