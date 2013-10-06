@@ -5,7 +5,6 @@ import xml.etree.ElementTree as ET
 
 base_url = 'http://www.ipadafp.afp.com/afp-wanifra'
 
-# TODO: Dates as part of metadata
 # TODO: Geolocation as part of metadata
 
 
@@ -45,6 +44,19 @@ def get_content(data):
     return summary, [p.text for p in content]
 
 
+def get_images(data):
+    imgroot = ET.fromstring(data).find('NewsItem/NewsComponent/NewsComponent[@Duid="photo0"]')
+
+    images = []
+
+    for imgnode in imgroot.findall('NewsComponent'):
+        if imgnode.find('Role[@FormalName="Thumbnail"]') is not None:
+            images.append(imgnode.find('ContentItem').get('Href'))
+
+    return images
+
+
+
 def get_relevant_data(who, max_results=30):
     try:
         data = urllib2.urlopen(base_url + '?%s=%s&rows=%d' % ('who_pers', quote(who), max_results)).read()
@@ -62,11 +74,12 @@ def get_relevant_data(who, max_results=30):
         date = get_published_at(data)
         metadata = get_entities(data)
         summary, content = get_content(data)
+        images = [url.rsplit('/', 1)[0] + '/' + img for img in get_images(data)]
 
-        yield url.rsplit('.xml', 1)[0], date, title, summary, content, metadata
+        yield url.rsplit('.xml', 1)[0], date, title, summary, content, metadata, images[0]
 
 
 if __name__ == '__main__':
     # Example how to use this module
-    for url, date, title, summary, paragraphs, metadata in get_relevant_data("Barack Obama"):
-        print date
+    for url, date, title, summary, paragraphs, metadata, images in get_relevant_data("Barack Obama"):
+        print images

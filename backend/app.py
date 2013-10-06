@@ -2,8 +2,11 @@
 
 from flask import Flask
 from flask import jsonify
+import datetime as dt
+from calendar import timegm as timestamp
 
 from calais import get_semantic_data
+from generator import PeekableGenerator
 
 from storyful import search_storyful
 from afp import search_afp
@@ -23,13 +26,14 @@ def storyful(name):
                 'metadata': None,
                 'href': story['html_resource_url'],
                 'source': 'storyful',
-                'published_at': story['published_at']
+                'thumbnail': None,
+                'published_at': dt.datetime.strptime(story['published_at'], '%Y-%m-%dT%H:%M:%SZ')
             }
 
 
 # Generator for searching in AFP API
 def afp(name):
-    for url, date, title, summary, paragraphs, metadata in search_afp(name):
+    for url, date, title, summary, paragraphs, metadata, image in search_afp(name):
         yield {
             'title': title,
             'summary': summary,
@@ -37,8 +41,10 @@ def afp(name):
             'metadata': metadata,
             'href': url,
             'source': 'afp',
-            'published_at': date.isoformat()
+            'thumbnail': image,
+            'published_at': date
         }
+
 
 # Generator for searching in guardian API
 def guardian(name):
@@ -50,69 +56,46 @@ def guardian(name):
             'metadata': None,
             'href': story['webUrl'],
             'source': 'guardian',
-            'published_at': story['webPublicationDate']
+            'thumbnail': story['fields']['thumbnail'] if 'thumbnail' in story['fields'] else None,
+            'published_at': dt.datetime.strptime(story['webPublicationDate'], '%Y-%m-%dT%H:%M:%SZ')
         }
+
 
 # Aggregate the generators
 def search_name(name):
-    def aggregator(generators):
-        i = 0
-        max_results = 30
-        while max_results:
-            max_results -= 1
-            try:
-                i = (i + 1) % len(generators)
-                yield generators[i].next()
-            except StopIteration:
-                del generators[i]
-                if len(generators) == 0:
-                    break
 
-    return aggregator([afp(name), guardian(name), storyful(name)])
+    # Merges one or more peekable generators
+    # does a merge sort on most recent date
+    def aggregator(*generators):
+        latest = 0
+
+        # initial state
+        for i in xrange(0, len(generators)):
+            if generators[i].hasMore():
+                latest = i
+                break
+
+        while 1:
+            # merge sort
+            for i in xrange(1, len(generators)):
+                if generators[i].hasMore() and generators[i].peek()['published_at'] > generators[latest].peek()['published_at']:
+                    latest = i
+
+            yield generators[latest].next()
+
+    return aggregator(
+        PeekableGenerator(afp(name)),
+        PeekableGenerator(guardian(name)),
+        PeekableGenerator(storyful(name))
+    )
 
 
 def search_for_person(name, page):
-    data = []
-
     context_list = []
 
     max_calais_request_size = 32768
-    max_results = 20
+    max_results = 10
 
-    def send_to_calais():
-        semantics = get_semantic_data(text)
-
-        for context in context_list: # This iterates over articles
-            persons = []
-            for name, offsets in semantics['persons']:
-                for offset in offsets:
-                    if context['begin'] <= offset < context['end']:
-                        persons.append(name)
-                        break
-
-            topics = []
-            for name, offsets in semantics['topics']:
-                for offset in offsets:
-                    if context['begin'] <= offset < context['end']:
-                        topics.append(name)
-                        break
-
-            for name, quote, offsets in semantics['quotes']:
-                for offset in offsets:
-                    if context['begin'] <= offset < context['end']:
-                        data.append({
-                            'who': name,
-                            'quote': quote,
-                            'headline': context['title'],
-                            'source': context['source'],
-                            'url': context['url'],
-                            'date': "2013-10-05",
-                            'people': persons,
-                            'tags': topics
-                        })
-                        break
-
-    text = ""
     for story in search_name(name):
         if max_results <= 0:
             break
@@ -120,44 +103,55 @@ def search_for_person(name, page):
 
         story_text = story['text'][0:max_calais_request_size]
 
-        old_length = len(text)
-        new_length = old_length + len(story_text)
-
-        if new_length > max_calais_request_size:
-            send_to_calais()
-
-            text = ""
-            old_length = 0
-            new_length = len(story_text)
-            context_list = []
-
         context = {
             'title': story['title'],
             'source': story['source'],
             'url': story['href'],
-            'begin': old_length,
-            'end': new_length
+            'thumb': story['thumbnail'],
+            'date': story['published_at']
         }
-        text += story_text
+
         context_list.append(context)
 
-    if text:
-        send_to_calais()
+        semantics = get_semantic_data(story_text)
 
-    return dict(
-        data=data,
-        next=None
-    )
+        for context in context_list: # This iterates over articles
+            persons = []
+            for name in semantics['persons']:
+                persons.append(name)
 
+            topics = []
+            for name in semantics['topics']:
+                topics.append(name)
+
+            for name, quote in semantics['quotes']:
+                yield {
+                    'who': name,
+                    'quote': quote,
+                    'headline': context['title'],
+                    'source': context['source'],
+                    'url': context['url'],
+                    'date': timestamp(context['date'].utctimetuple()),
+                    'people': persons,
+                    'thumbnail': context['thumb'],
+                    'tags': topics
+                }
+
+
+def get_person_page(name, page):
+    return {
+        'data': [x for x in search_for_person(name, page)],
+        'next': None
+    }
 
 @app.route("/persons/<name>/")
 def persons_first_page(name):
-    return jsonify(search_for_person(name, 0))
+    return jsonify(get_person_page(name, 0))
 
 
 @app.route("/persons/<name>/<int:page>")
 def persons_page(name, page):
-    return jsonify(search_for_person(name, page))
+    return jsonify(get_person_page(name, page))
 
 
 if __name__ == "__main__":
