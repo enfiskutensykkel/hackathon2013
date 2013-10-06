@@ -92,12 +92,18 @@ font-size: 14px;
 margin-top: 12px;
 }
 
-#quotesList .tagList .tag
+#quotesList .tag
 {
 	border: 1px solid #999;
 	background-color: #eee;
 	padding: 2px;
 	margin-right: 7px;
+}
+
+#quotesList .personList
+{
+	margin-top: 14px;
+	font-size: 14px;
 }
 
 .quoteItem
