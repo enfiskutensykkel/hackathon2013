@@ -1,13 +1,13 @@
-var speakerDimension, timeDimension, tagDimension, peopleDimension, speaker;
+var cxData, speakerDimension, timeDimension, tagDimension, peopleDimension, speaker;
 
 function filterResult(json) {
 
-	var data = crossfilter(json);
+	cxData = crossfilter(json);
 
-	speakerDimension = data.dimension(function(d) {return d.who;});
-	timeDimension = data.dimension(function(d) {return new Date(d.date);});
-	tagDimension = data.dimension(function(d) {return d.tags;});
-	peopleDimension = data.dimension(function(d) {return d.people;});
+	speakerDimension = cxData.dimension(function(d) {return d.who;});
+	timeDimension = cxData.dimension(function(d) {return new Date(d.date);});
+	tagDimension = cxData.dimension(function(d) {return d.tags;});
+	peopleDimension = cxData.dimension(function(d) {return d.people;});
 
 	speaker = $(".searchField").val().replace(/(\b)([a-zA-Z])/g,
            function(firstLetter){
@@ -22,7 +22,8 @@ function filterResult(json) {
 
 function filterAdd (json)
 {
-	crossfilter.add(json);
+	cxData.add(json);
+	return returnFilteredDataObj();
 }
 
 function filterByTag(tag) {

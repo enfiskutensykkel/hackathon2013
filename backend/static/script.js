@@ -53,6 +53,26 @@ function onSearchResult (result)
 	for (var i=0; i<result.data.length; i++)
 	{
 		quotes.push(result.data[i]);
+		if (!cxData) {
+			$("#searchInfo").remove();
+			$("#progress").hide();
+
+			data = filterResult(quotes);
+			addQuotes(data);	
+
+		} else {
+
+			$("#searchInfo").remove();
+			$("#progress").hide();
+
+			data = filterAdd([result.data[i]]);
+			addQuotes(data);
+
+			$(".linkWrapper").empty();
+			$(".linkWrapper").append("<a class='filterLinkSpeaker selected' href='javascript:onRelatedLinks(true);'>Quotes from this person</a>");
+			$(".linkWrapper").append("<a class='filterLinkOthers' href='javascript:onRelatedLinks(false);'>Quotes from other people in articles related to this person</a>");		
+
+		}
 	}
 	
 	if (result.next && counter < counterMax)
@@ -66,7 +86,7 @@ function onSearchResult (result)
 		$("#searchInfo").remove();
 		$("#progress").hide();
 
-		data = filterResult(quotes);
+		//data = filterResult(quotes);
 		addQuotes(data);	
 
 		$(".linkWrapper").empty();
@@ -74,7 +94,7 @@ function onSearchResult (result)
 		$(".linkWrapper").append("<a class='filterLinkOthers' href='javascript:onRelatedLinks(false);'>Quotes from other people in articles related to this person</a>");		
 	
 	}
-	
+
 }
 
 function onRelatedLinks (useSpeaker)
