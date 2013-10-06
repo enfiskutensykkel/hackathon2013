@@ -26,13 +26,14 @@ def storyful(name):
                 'metadata': None,
                 'href': story['html_resource_url'],
                 'source': 'storyful',
+                'thumbnail': None,
                 'published_at': dt.datetime.strptime(story['published_at'], '%Y-%m-%dT%H:%M:%SZ')
             }
 
 
 # Generator for searching in AFP API
 def afp(name):
-    for url, date, title, summary, paragraphs, metadata in search_afp(name):
+    for url, date, title, summary, paragraphs, metadata, image in search_afp(name):
         yield {
             'title': title,
             'summary': summary,
@@ -40,6 +41,7 @@ def afp(name):
             'metadata': metadata,
             'href': url,
             'source': 'afp',
+            'thumbnail': image,
             'published_at': date
         }
 
@@ -54,34 +56,38 @@ def guardian(name):
             'metadata': None,
             'href': story['webUrl'],
             'source': 'guardian',
+            'thumbnail': None,
             'published_at': dt.datetime.strptime(story['webPublicationDate'], '%Y-%m-%dT%H:%M:%SZ')
         }
 
 
 # Aggregate the generators
 def search_name(name):
-    def aggregator(generators):
-        lowest = 0
+
+    # Merges one or more peekable generators
+    # does a merge sort on most recent date
+    def aggregator(*generators):
+        latest = 0
 
         # initial state
         for i in xrange(0, len(generators)):
             if generators[i].hasMore():
-                lowest = i
+                latest = i
                 break
 
         while 1:
             # merge sort
             for i in xrange(1, len(generators)):
-                if generators[i].hasMore() and generators[i].peek()['published_at'] > generators[lowest].peek()['published_at']:
-                    lowest = i
+                if generators[i].hasMore() and generators[i].peek()['published_at'] > generators[latest].peek()['published_at']:
+                    latest = i
 
-            yield generators[lowest].next()
+            yield generators[latest].next()
 
-    return aggregator([
+    return aggregator(
         PeekableGenerator(afp(name)),
         PeekableGenerator(guardian(name)),
         PeekableGenerator(storyful(name))
-    ])
+    )
 
 
 def search_for_person(name, page):
@@ -121,6 +127,7 @@ def search_for_person(name, page):
                             'url': context['url'],
                             'date':  timestamp(context['date'].utctimetuple()),
                             'people': persons,
+                            'thumbnail': context['thumb'],
                             'tags': topics
                         })
                         break
@@ -150,6 +157,7 @@ def search_for_person(name, page):
             'url': story['href'],
             'date': story['published_at'],
             'begin': old_length,
+            'thumb': story['thumbnail'],
             'end': new_length
         }
         text += story_text
