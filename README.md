@@ -14,7 +14,7 @@ APIs
 ----
 
 We read data from the AFP, theguardian and the storyful API.
-We make use of the [OpenCalais]{http://www.opencalais.com/} to extract semantic data from the data delivered by the APIs.
+We make use of the [OpenCalais](http://www.opencalais.com/) to extract semantic data from the data delivered by the APIs.
 
 Libraries
 ---------
@@ -26,7 +26,7 @@ Libraries we use:
 
 Hosting
 -------
-The application is hosted on [heroku]{http://www.heroku.com}.
+The application is hosted on [heroku](http://www.heroku.com).
 
 The application is running here:
 http://peaceful-waters-6158.herokuapp.com/static/index.html
