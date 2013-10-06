@@ -13,7 +13,10 @@ Contributors are
 APIs
 ----
 
-We read data from the AFP, theguardian and the storyful API.
+We read data from the 
+[AFP](http://www.ipadafp.afp.com/mediahackdays/index.php?p=doc),
+[theguardian](http://explorer.content.guardianapis.com/#/)
+and the [storyful](http://github.com/storyful/StoryfulApiDoc) APIs.
 We make use of the [OpenCalais](http://www.opencalais.com/) to extract semantic data from the data delivered by the APIs.
 
 Libraries
