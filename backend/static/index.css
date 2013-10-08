@@ -30,18 +30,17 @@ body
 .listWrapper
 {
 	margin-top: 20px;
+	min-height: 100px;
 }
 
 .inputWrapper
 {
 	text-align: center;
-	height: 80px;
-	
+	height: 90px;
 	background-color: #222222;
 	border-color: #080808;
-	border-radius: 0 0 5px 5px;
-	
 	background-image:url('texturebg.png');
+	height: 105px;
 }
 
 .searchField
@@ -59,7 +58,13 @@ body
 	width: 700px ;
 	margin-left: auto ;
 	margin-right: auto ;
+	font-size: 12px;
+}
 
+#quotesList .quotePart .label
+{
+	width: 60px;
+	display: inline-block;
 }
 
 #quotesList .quotePart.date
@@ -72,7 +77,7 @@ body
 {
 	font-style: italic;
 	word-wrap: break-word;
-	margin-top: 2px;
+	margin-top: 14px;
 }
 
 #quotesList .quotePart .who
@@ -88,22 +93,23 @@ body
 
 #quotesList .quotePart.tagList
 {
-font-size: 14px;
-margin-top: 12px;
+	margin-top: 12px;
+	cursor: pointer;
 }
 
 #quotesList .tag
 {
-	border: 1px solid #999;
-	background-color: #eee;
+	background: #e2e6f0;
+	border: 1px solid #9daccc;
 	padding: 2px;
 	margin-right: 7px;
+	line-height: 2;
 }
 
 #quotesList .personList
 {
-	margin-top: 14px;
-	font-size: 14px;
+	margin-bottom: 10px;
+	margin-top: 3px;
 }
 
 .quoteItem
@@ -153,19 +159,42 @@ margin-top: 12px;
 	font-size: 14px;
 }
 
+
+.linkWrapper a
+{
+	font-size: 14px;
+	border-radius: 0 0 5px 5px;
+	padding: 0 4px 4px 4px;
+	padding-top: 2px;
+	background-color: #444;
+	color: #fff;
+	background-image: url('texturebg.png');
+	padding-bottom: 5px;
+	text-decoration: none;
+}
+
 .filterLinkSpeaker 
 {
 	text-align: left;
 }
 
-.filterLinkOthers 
-{
-	text-align: right;
-}
 
 .selected 
 {
-	background-color: #fff;
-	border-radius: 0 0 5px 5px;
-	border: 1px solid #ccc;
+	background-color: #fff!Important;
+	border: 1px solid #000;
+	color: #000!Important;
+	background-image: none!Important;
+}
+
+.note 
+{
+	color: #999;
+	margin-top: 2px;
+	font-size: 12px;
+}
+
+.calais
+{
+	text-align: center;
 }
