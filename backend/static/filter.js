@@ -12,12 +12,23 @@ function filterResult(json) {
 	speaker = $(".searchField").val().replace(/(\b)([a-zA-Z])/g,
            function(firstLetter){
               return   firstLetter.toUpperCase();
-           });;
+           });
 
 	filterBySpeaker(true);
 
 	return returnFilteredDataObj();
 
+}
+
+function removeFilters()
+{
+	if (cxData)
+	{
+		speakerDimension.remove();
+		timeDimension.remove();
+		tagDimension.remove();
+		peopleDimension.remove();
+	}
 }
 
 function filterAdd (json)

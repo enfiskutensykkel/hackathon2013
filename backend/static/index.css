@@ -11,7 +11,7 @@ body
 	text-align: center;
 	padding-top: 16px;
 	font-size: 35px;
-	
+	border-radius: 5px 5px 0px 0px;
 	background-image:url('texturebg.png');
 }
 
@@ -23,7 +23,7 @@ body
 	margin-left: auto;
 	margin-right: auto;
 	background-color: #fff;
-	border-radius: 0 0 5px 5px;
+	border-radius: 5px 5px 5px 5px;
 	border: 1px solid #ccc;
 }
 
@@ -41,6 +41,7 @@ body
 	border-color: #080808;
 	background-image:url('texturebg.png');
 	height: 105px;
+	border-radius: 0px 0px 5px 5px;
 }
 
 .searchField
@@ -78,6 +79,9 @@ body
 	font-style: italic;
 	word-wrap: break-word;
 	margin-top: 14px;
+	font-size: 14px;
+	background-color: #eee;
+	padding: 6px;
 }
 
 #quotesList .quotePart .who
@@ -101,9 +105,10 @@ body
 {
 	background: #e2e6f0;
 	border: 1px solid #9daccc;
-	padding: 2px;
+	padding: 3px;
 	margin-right: 7px;
 	line-height: 2;
+	border-radius: 2px;
 }
 
 #quotesList .personList
@@ -115,6 +120,7 @@ body
 .quoteItem
 {
 	border: 1px solid #eee;
+	border-radius: 5px;
 	margin: 8px 20px 8px 20px;
 	padding-top: 5px;
 }

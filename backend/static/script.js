@@ -11,13 +11,6 @@ var counterMax = 10;
 var counter = 0;
 var quotes = [];
 
-function addQuotes (item)
-{
-	$.tmpl( "quoteItemTmpl", item ).appendTo("#quotesList");
-	$(".tagList .tag").on("click", function() {
-		return $(this).hasClass('selected') ?  onTagFilter("") : onTagFilter(this.innerHTML);
-	})
-}
 
 function addEvents ()
 {
@@ -26,6 +19,7 @@ function addEvents ()
 	{
 		if (event.which == 13)
 		{
+			removeFilters();
 			$("#quotesList").empty();
 			$("#quotesList").append("<div id='searchInfo' class='quotePart'>Searching...</div>");
 			quotes = [];
@@ -47,6 +41,15 @@ function doSearch (value, nextUrl)
 	putSerch(text, onSearchResult, nextUrl);
 }
 
+
+function addQuotes (quotes)
+{
+	$.tmpl( "quoteItemTmpl", quotes ).appendTo("#quotesList");
+	$(".tagList .tag").on("click", function() {
+		return $(this).hasClass('selected') ?  onTagFilter("") : onTagFilter(this.innerHTML);
+	})
+}
+
 function onSearchResult (result)
 {
 	$("#progress").hide();
@@ -60,19 +63,19 @@ function onSearchResult (result)
 		if (!cxData) {
 			$("#searchInfo").remove();
 			$("#progress").hide();
-			$("#quotesList").empty();
+			//$("#quotesList").empty();
 
 			data = filterResult(quotes);
-			addQuotes(data);
+			//addQuotes(data);
 
 		} else {
 
 			$("#searchInfo").remove();
 			$("#progress").hide();
-			$("#quotesList").empty();
+			//$("#quotesList").empty();
 
 			data = filterAdd([result.data[i]]);
-			addQuotes(data);
+			//addQuotes(data);
 
 			addLinkWrapper();
 		}
