@@ -23,9 +23,9 @@ We make use of [OpenCalais](http://www.opencalais.com/) to extract semantic data
 Libraries
 ---------
 Libraries we use:
-  * jQuery and jQuery template for pretty front-end stuff
-  * crossfilter for managing large data objects in JavaScript
-  * Flask for Python back-end which reads from the APIs and posting and reading result from OpenCalais
+  * jQuery and jQuery template for pretty front-end stuff.
+  * crossfilter for managing large data objects in JavaScript.
+  * Flask for Python back-end which reads from the APIs and posting and reading result from OpenCalais.
 
 
 Hosting
