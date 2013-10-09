@@ -204,3 +204,9 @@ body
 {
 	text-align: center;
 }
+
+.contentWrapper
+{
+	width: 100%;
+	height: 100%;
+}

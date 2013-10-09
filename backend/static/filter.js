@@ -28,6 +28,8 @@ function removeFilters()
 		timeDimension.remove();
 		tagDimension.remove();
 		peopleDimension.remove();
+		cxData.remove();
+		cxData = null;
 	}
 }
 
